@@ -45,9 +45,9 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
+    // let getData=await Form.find({}).select("lastName email").sort({
     let getData = await Form.find({})
       .sort({
-        // let getData=await Form.find({}).select("lastName email").sort({
         createdAt: -1,
       })
       .lean();
@@ -149,3 +149,33 @@ exports.deleteForm = async (req, res) => {
     });
   }
 };
+
+exports.getFormById= async(req,res)=>{
+  try{
+    let {id}=req.params;
+    if(!id){
+      return res.status(400).json({
+        errorcode:1,
+        status:false,
+        message:"id should be present",
+        data:null
+      })
+    }
+    let getData=await Form.findById({_id:id}).select("lastName").lean();
+    return res.status(200).json({
+      errorcode:0,
+      status:true,
+      message:"Get Single Data",
+      data:getData,
+    })
+  }
+  catch(error){
+    return res.status(500).json({
+      errorcode:1,
+      status:false,
+      message:error.message,
+      data:error,
+    })
+  }
+}
+
